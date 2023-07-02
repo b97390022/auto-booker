@@ -125,7 +125,7 @@ class BadmintonBooker(Booker):
 
     def book_badminton_court(self, num: int, court_name: str, book_date_days: int):
         now = datetime.datetime.now(timezone("Asia/Taipei"))
-        book_date = (now+datetime.timedelta(days=book_date_days)).strftime("%Y/%m/%d")
+        book_date = (now + datetime.timedelta(days=book_date_days)).strftime("%Y/%m/%d")
         with requests.Session() as session:
             # try to set cookies
             for cookie in self.cookies:

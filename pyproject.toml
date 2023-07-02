@@ -15,6 +15,7 @@ loguru = "^0.7.0"
 pydantic = "2.0"
 schedule = "^1.2.0"
 pytz = "^2023.3"
+argparse = "^1.4.0"
 
 
 [tool.poetry.group.dev.dependencies]
