@@ -1,0 +1,7 @@
+services:
+  auto-booker:
+    image: shau1943/auto-booker:latest
+    container_name: auto-booker
+    restart: unless-stopped
+    volumes:
+      - ./config.json:/auto-booker/config.json
