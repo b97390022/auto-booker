@@ -6,5 +6,6 @@ services:
     environment:
       - job_number=${job_number}
       - job_days=${job_days}
+      - court_name=${court_name}
     volumes:
       - ./config.json:/auto-booker/config.json

@@ -1,8 +1,10 @@
 from abc import ABC, abstractmethod
+import asyncio
 import base64
 from collections.abc import Callable
 import datetime
 import requests
+import functools
 from src.config import config
 from src.captcha import Captcha
 from src.locator import Locator
@@ -24,7 +26,7 @@ class BookingThread(threading.Thread):
 
     def run(self):
         logger.info(f"start job with num: {self.num}")
-        self.job(self.num, **self.kwargs)
+        asyncio.run(self.job(self.num, **self.kwargs))
         logger.info(f"finish job with num: {self.num}")
 
 
@@ -101,7 +103,7 @@ class Booker(BookerBase):
 class BadmintonBooker(Booker):
     def __init__(self) -> None:
         super().__init__()
-        # badminton
+        self.pt = "1"
         self.court_map: dict = {
             "A": "84",
             "B": "85",
@@ -110,42 +112,60 @@ class BadmintonBooker(Booker):
             "E": "88",
             "F": "89",
         }
+        self.book_time: list[str] = ["19", "20"]
 
-    def test_expire_time(self):
-        with requests.Session() as session:
-            r = session.get(
-                url=self.url,
-                headers={
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
-                },
-                params={"Module": "member", "files": "orderx_mt"},
-            )
-            print(r.status_code)
-            print(r.text)
+    async def async_get(
+        self,
+        loop,
+        url: str,
+        headers: dict = {},
+        params: dict = {},
+        cookies: list = [],
 
-    def book_badminton_court(self, num: int, court_name: str, book_date_days: int):
-        now = datetime.datetime.now(timezone("Asia/Taipei"))
-        book_date = (now + datetime.timedelta(days=book_date_days)).strftime("%Y/%m/%d")
+    ):
         with requests.Session() as session:
             # try to set cookies
-            for cookie in self.cookies:
+            for cookie in cookies:
                 session.cookies.set(cookie["name"], cookie["value"])
-            r = session.get(
+
+            r = await loop.run_in_executor(
+                None,
+                functools.partial(
+                    session.get,
+                    url=url,
+                    headers=headers,
+                    params=params
+                )
+            )
+            return r
+    
+    async def book_badminton_court(self, num: int, court_name: str, book_date_days: int):
+        now = datetime.datetime.now(timezone("Asia/Taipei"))
+        book_date = (now + datetime.timedelta(days=book_date_days)).strftime("%Y/%m/%d")
+
+        loop = asyncio.get_event_loop()
+        tasks = []
+        for book_time in self.book_time:
+            tasks.append(loop.create_task(self.async_get(
+                loop=loop,
                 url=self.url,
                 headers={
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+                    "Host": "scr.cyc.org.tw",
                 },
                 params={
                     "module": "net_booking",
                     "files": "booking_place",
                     "StepFlag": "25",
                     "QPid": self.court_map.get(court_name),
-                    "QTime": "6",
-                    "PT": "1",
+                    "QTime": book_time,
+                    "PT": self.pt,
                     "D": book_date,
                 },
-            )
-            logger.info(f"job: {num} with status {r.status_code}")
+                cookies=self.cookies,
+            )))
+        results = await asyncio.gather(*tasks)
+        logger.info(f"job: {num} with status {[r.status_code for r in results]}")
 
     def main(self, job_number: int, **kwargs):
         threads = []
@@ -157,10 +177,3 @@ class BadmintonBooker(Booker):
         for thread in threads:
             thread.join()
         logger.info(f"All jobs are finished.")
-
-
-if __name__ == "__main__":
-    booker = Booker()
-    logger.info(booker.cookies)
-    # booker.login()
-    booker.main()

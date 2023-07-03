@@ -52,9 +52,9 @@ git clone https://github.com/b97390022/auto-booker.git
 cd auto-booker
 
 # Windows
-set job_number=20 && set job_days=+10 && docker compose up -d
+set job_number=20 && set job_days=+10 && set court_name=F && docker compose up -d
 # Linux
-job_number=20 job_days=+10 docker-compose up -d
+job_number=20 job_days=+10 court_name=F docker-compose up -d
 
 ```
 
