@@ -35,10 +35,10 @@ if __name__ == "__main__":
     logger.info(
         f"schedule with arguments: job_number: {job_number}, job_days: {job_days}"
     )
-    schedule.every().day.at("14:39:00", timezone("Asia/Taipei")).do(
+    schedule.every().day.at("23:50:00", timezone("Asia/Taipei")).do(
         prerequisite, booker=booker
     )
-    schedule.every().day.at("14:39:40", timezone("Asia/Taipei")).do(
+    schedule.every().day.at("00:00:00", timezone("Asia/Taipei")).do(
         main,
         booker=booker,
         job_number=job_number,

@@ -121,7 +121,6 @@ class BadmintonBooker(Booker):
         headers: dict = {},
         params: dict = {},
         cookies: list = [],
-
     ):
         with requests.Session() as session:
             # try to set cookies
@@ -130,40 +129,41 @@ class BadmintonBooker(Booker):
 
             r = await loop.run_in_executor(
                 None,
-                functools.partial(
-                    session.get,
-                    url=url,
-                    headers=headers,
-                    params=params
-                )
+                functools.partial(session.get, url=url, headers=headers, params=params),
             )
             return r
-    
-    async def book_badminton_court(self, num: int, court_name: str, book_date_days: int):
+
+    async def book_badminton_court(
+        self, num: int, court_name: str, book_date_days: int
+    ):
         now = datetime.datetime.now(timezone("Asia/Taipei"))
         book_date = (now + datetime.timedelta(days=book_date_days)).strftime("%Y/%m/%d")
 
         loop = asyncio.get_event_loop()
         tasks = []
         for book_time in self.book_time:
-            tasks.append(loop.create_task(self.async_get(
-                loop=loop,
-                url=self.url,
-                headers={
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
-                    "Host": "scr.cyc.org.tw",
-                },
-                params={
-                    "module": "net_booking",
-                    "files": "booking_place",
-                    "StepFlag": "25",
-                    "QPid": self.court_map.get(court_name),
-                    "QTime": book_time,
-                    "PT": self.pt,
-                    "D": book_date,
-                },
-                cookies=self.cookies,
-            )))
+            tasks.append(
+                loop.create_task(
+                    self.async_get(
+                        loop=loop,
+                        url=self.url,
+                        headers={
+                            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+                            "Host": "scr.cyc.org.tw",
+                        },
+                        params={
+                            "module": "net_booking",
+                            "files": "booking_place",
+                            "StepFlag": "25",
+                            "QPid": self.court_map.get(court_name),
+                            "QTime": book_time,
+                            "PT": self.pt,
+                            "D": book_date,
+                        },
+                        cookies=self.cookies,
+                    )
+                )
+            )
         results = await asyncio.gather(*tasks)
         logger.info(f"job: {num} with status {[r.status_code for r in results]}")
 
