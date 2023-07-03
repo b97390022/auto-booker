@@ -37,6 +37,7 @@ Please place the config.json file into the auto-booker root folder and replace t
 ### arguments
 + job_number(int): 平行執行的任務數量，預設為10
 + job_days(int): 預計要預約的日期相對於排程日期，預設為+13
++ court_name(str): 預約的場地編號，預設為E
 
 ### basic
 ```bash
