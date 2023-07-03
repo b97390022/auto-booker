@@ -19,21 +19,17 @@ def main(booker: BadmintonBooker, job_number: int, **kwargs):
 
 
 if __name__ == "__main__":
-    job_number = os.environ.get("job_number", 10)
-    job_days = os.environ.get("job_days", +13)
-    court_name = os.environ.get("court_name", "E")
-
-    if job_number == "":
-        job_number = 1
-    if job_days == "":
+    if (job_number := os.environ.get("job_number", 10)) == "":
+        job_number = 10
+    if (job_days := os.environ.get("job_days", +13)) == "":
         job_days = +13
-    if court_name == "":
+    if (court_name := os.environ.get("court_name", "E")) == "":
         court_name = "E"
 
     booker = BadmintonBooker()
     logger.info("Starting schedule jobs...")
     logger.info(
-        f"schedule with arguments: job_number: {job_number}, job_days: {job_days}"
+        f"schedule with arguments: job_number: {job_number}, job_days: {job_days}, court_name: {court_name}"
     )
     schedule.every().day.at("23:50:00", timezone("Asia/Taipei")).do(
         prerequisite, booker=booker
