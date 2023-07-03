@@ -20,7 +20,7 @@ RUN pip install -r requirements.txt
 
 COPY . ${SOURCE_FOLDER}
 
-ENTRYPOINT python -m src.main
+CMD python -m src.main
 
 #########################
 FROM base as test
