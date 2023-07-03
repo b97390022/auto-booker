@@ -3,5 +3,8 @@ services:
     image: shau1943/auto-booker:latest
     container_name: auto-booker
     restart: unless-stopped
+    environment:
+      - job_number=${job_number}
+      - job_days=${job_days}
     volumes:
       - ./config.json:/auto-booker/config.json

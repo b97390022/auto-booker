@@ -16,8 +16,8 @@ class SeleniumService:
     def __init__(self) -> None:
         self._init_chrome_options()
         self._driver = webdriver.Chrome(
-            service=ChromeService(ChromeDriverManager().install()),
             options=self.chrome_options,
+            service=ChromeService(ChromeDriverManager().install()),
         )
         self.default_timeout: int = 60
 
