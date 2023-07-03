@@ -126,7 +126,6 @@ class BadmintonBooker(Booker):
             # try to set cookies
             for cookie in cookies:
                 session.cookies.set(cookie["name"], cookie["value"])
-
             r = await loop.run_in_executor(
                 None,
                 functools.partial(session.get, url=url, headers=headers, params=params),
@@ -134,10 +133,13 @@ class BadmintonBooker(Booker):
             return r
 
     async def book_badminton_court(
-        self, num: int, court_name: str, book_date_days: int
+        self,
+        num: int,
+        job_days: int,
+        court_name: str,
     ):
         now = datetime.datetime.now(timezone("Asia/Taipei"))
-        book_date = (now + datetime.timedelta(days=book_date_days)).strftime("%Y/%m/%d")
+        book_date = (now + datetime.timedelta(days=job_days)).strftime("%Y/%m/%d")
 
         loop = asyncio.get_event_loop()
         tasks = []
@@ -150,6 +152,9 @@ class BadmintonBooker(Booker):
                         headers={
                             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
                             "Host": "scr.cyc.org.tw",
+                            "Accept": "*/*",
+                            "Accept-Encoding": "gzip, deflate, br",
+                            "Connection": "keep-alive",
                         },
                         params={
                             "module": "net_booking",

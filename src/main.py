@@ -19,11 +19,21 @@ def main(booker: BadmintonBooker, job_number: int, **kwargs):
 
 
 if __name__ == "__main__":
-    if (job_number := os.environ.get("job_number", 10)) == "":
+    job_number = os.environ.get("job_number", 10)
+    job_days = os.environ.get("job_days", +13)
+    court_name = os.environ.get("court_name", "E")
+
+    if job_number == "":
         job_number = 10
-    if (job_days := os.environ.get("job_days", +13)) == "":
+    else:
+        job_number = int(job_number)
+
+    if job_days == "":
         job_days = +13
-    if (court_name := os.environ.get("court_name", "E")) == "":
+    else:
+        job_days = int(job_days)
+
+    if court_name == "":
         court_name = "E"
 
     booker = BadmintonBooker()
@@ -38,8 +48,8 @@ if __name__ == "__main__":
         main,
         booker=booker,
         job_number=job_number,
+        job_days=job_days,
         court_name=court_name,
-        book_date_days=job_days,
     )
 
     while True:
