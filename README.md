@@ -40,7 +40,7 @@ Please place the config.json file into the auto-booker root folder and replace t
 + court_name(str): 預約的場地編號，預設為F
 + book_time(str): 預約的時段，預設為19
 
-### basic
+### basic usage
 ```bash
 git clone https://github.com/b97390022/auto-booker.git
 cd auto-booker
@@ -49,7 +49,7 @@ docker compose up
 ```
 
 ### with arguments
-modify docker-compose.yml to adding more worker as you needed.
+modify docker-compose.yml to adding more workers as you needed.
 #### example
 ```yaml
 services:
@@ -70,10 +70,12 @@ services:
     volumes:
       - ./config.json:/auto-booker/config.json
 ```
+#### usage
 ```bash
 git clone https://github.com/b97390022/auto-booker.git
 cd auto-booker
 
+docker compose up
 ```
 
 ## Contributing

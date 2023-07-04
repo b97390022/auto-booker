@@ -5,6 +5,7 @@ import time
 from loguru import logger
 import os
 
+
 def prerequisite(booker: BadmintonBooker):
     logger.info(f"Running prerequisite.")
     booker.login()
