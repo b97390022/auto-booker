@@ -37,25 +37,42 @@ Please place the config.json file into the auto-booker root folder and replace t
 ### arguments
 + job_number(int): 平行執行的任務數量，預設為10
 + job_days(int): 預計要預約的日期相對於排程日期，預設為+13
-+ court_name(str): 預約的場地編號，預設為E
++ court_name(str): 預約的場地編號，預設為F
++ book_time(str): 預約的時段，預設為19
 
 ### basic
 ```bash
 git clone https://github.com/b97390022/auto-booker.git
 cd auto-booker
 
-docker compose up -d
+docker compose up
 ```
 
 ### with arguments
+modify docker-compose.yml to adding more worker as you needed.
+#### example
+```yaml
+services:
+  auto-booker-1:
+    image: shau1943/auto-booker:latest
+    restart: unless-stopped
+    environment:
+      - court_name=F
+      - book_time=19
+    volumes:
+      - ./config.json:/auto-booker/config.json
+  auto-booker-2:
+    image: shau1943/auto-booker:latest
+    restart: unless-stopped
+    environment:
+      - court_name=F
+      - book_time=20
+    volumes:
+      - ./config.json:/auto-booker/config.json
+```
 ```bash
 git clone https://github.com/b97390022/auto-booker.git
 cd auto-booker
-
-# Windows
-set job_number=20 && set job_days=+10 && set court_name=F && docker compose up -d
-# Linux
-job_number=20 job_days=+10 court_name=F docker-compose up -d
 
 ```
 

@@ -1,11 +1,17 @@
 services:
-  auto-booker:
+  auto-booker-1:
     image: shau1943/auto-booker:latest
-    container_name: auto-booker
     restart: unless-stopped
     environment:
-      - job_number=${job_number}
-      - job_days=${job_days}
-      - court_name=${court_name}
+      - court_name=F
+      - book_time=19
+    volumes:
+      - ./config.json:/auto-booker/config.json
+  auto-booker-2:
+    image: shau1943/auto-booker:latest
+    restart: unless-stopped
+    environment:
+      - court_name=F
+      - book_time=20
     volumes:
       - ./config.json:/auto-booker/config.json
