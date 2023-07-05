@@ -36,6 +36,7 @@ Please place the config.json file into the auto-booker root folder and replace t
 
 ### arguments
 + job_number(int): 平行執行的任務數量，預設為10
++ task_number(int): 每個任務內的substask數量，預設為1
 + job_days(int): 預計要預約的日期相對於排程日期，預設為+13
 + court_name(str): 預約的場地編號，預設為F
 + book_time(str): 預約的時段，預設為19
@@ -48,6 +49,7 @@ cd auto-booker
 docker compose up
 ```
 
+# 我用了10個job * 10個subtask = 100 個請求，帳號就被鎖了...請小心XD
 ### with arguments
 modify docker-compose.yml to adding more workers as you needed.
 #### example
@@ -57,6 +59,9 @@ services:
     image: shau1943/auto-booker:latest
     restart: unless-stopped
     environment:
+      - job_number=10
+      - task_number=1
+      - job_days=13
       - court_name=F
       - book_time=19
     volumes:
@@ -65,6 +70,9 @@ services:
     image: shau1943/auto-booker:latest
     restart: unless-stopped
     environment:
+      - job_number=10
+      - task_number=1
+      - job_days=13
       - court_name=F
       - book_time=20
     volumes:

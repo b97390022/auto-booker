@@ -20,6 +20,7 @@ def main(booker: BadmintonBooker, job_number: int, **kwargs):
 
 if __name__ == "__main__":
     job_number = os.environ.get("job_number", 10)
+    task_number = os.environ.get("task_number", 10)
     job_days = os.environ.get("job_days", +13)
     court_name = os.environ.get("court_name", "F")
     book_time = os.environ.get("book_time", "19")
@@ -28,6 +29,11 @@ if __name__ == "__main__":
         job_number = 10
     else:
         job_number = int(job_number)
+
+    if task_number == "":
+        task_number = 1
+    else:
+        task_number = int(task_number)
 
     if job_days == "":
         job_days = +13
@@ -43,7 +49,7 @@ if __name__ == "__main__":
     booker = BadmintonBooker()
     logger.info("Starting schedule jobs...")
     logger.info(
-        f"schedule with arguments: job_number: {job_number}, job_days: {job_days}, court_name: {court_name}, book_time: {book_time}"
+        f"schedule with arguments: job_number: {job_number}, task_number: {task_number}, job_days: {job_days}, court_name: {court_name}, book_time: {book_time}"
     )
     schedule.every().day.at("23:45:00", timezone("Asia/Taipei")).do(
         prerequisite, booker=booker
@@ -53,6 +59,7 @@ if __name__ == "__main__":
         main,
         booker=booker,
         job_number=job_number,
+        task_number=task_number,
         job_days=job_days,
         court_name=court_name,
         book_time=book_time,

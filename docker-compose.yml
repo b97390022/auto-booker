@@ -3,6 +3,9 @@ services:
     image: shau1943/auto-booker:latest
     restart: unless-stopped
     environment:
+      - job_number=10
+      - task_number=1
+      - job_days=13
       - court_name=F
       - book_time=19
     volumes:
@@ -11,6 +14,9 @@ services:
     image: shau1943/auto-booker:latest
     restart: unless-stopped
     environment:
+      - job_number=10
+      - task_number=1
+      - job_days=13
       - court_name=F
       - book_time=20
     volumes:
